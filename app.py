@@ -1,18 +1,32 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Opprett en rettet graf (for å vise hierarki)
+# Opprett en rettet graf
 G = nx.DiGraph()
 
-# Legg til noder (personer)
-G.add_nodes_from(['Skrue Duck', 'Donald Duck', 'Anton Duck', 'Bestemor Duck'])
+# Legg til noder med jobbtitler
+nodes = [
+    ('Skrue Duck', 'Sjef'),
+    ('Donald Duck', 'Arbeider'),
+    ('Anton Duck', 'PR-sjef'),
+    ('Bestemor Duck', 'HR-sjef')
+]
+G.add_nodes_from(nodes)
 
-# Legg til kanter (forhold)
-G.add_edges_from([('Skrue Duck', 'Donald Duck'), ('Skrue Duck', 'Anton Duck'), ('Skrue Duck', 'Bestemor Duck')])
+# Legg til kanter
+edges = [
+    ('Skrue Duck', 'Donald Duck'),
+    ('Skrue Duck', 'Anton Duck'),
+    ('Skrue Duck', 'Bestemor Duck')
+]
+G.add_edges_from(edges)
 
-# Tegn grafen
-pos = nx.spring_layout(G)  # Posisjonere nodene
-nx.draw(G, pos, with_labels=True, font_weight='bold')
+# Tegn grafen med firkantede noder og jobbtitler
+pos = nx.spring_layout(G)
+nx.draw(G, pos, with_labels=True, node_shape='s', node_size=1500, font_weight='bold')
 
-# Vis grafen
+# Legg til jobbtitler som node-etiketter
+node_labels = nx.get_node_attributes(G, 'Jobbtittel')
+nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=10, verticalalignment='bottom')
+
 plt.show()
