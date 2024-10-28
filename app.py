@@ -1,8 +1,4 @@
-import networkx as nx
-import matplotlib.pyplot as plt
-
-# Opprett en rettet graf
-G = nx.DiGraph()
+import plotly.graph_objects as go
 
 # Legg til noder med jobbtitler
 nodes = [
@@ -11,22 +7,20 @@ nodes = [
     ('Anton Duck', 'PR-sjef'),
     ('Bestemor Duck', 'HR-sjef')
 ]
-G.add_nodes_from(nodes)
 
-# Legg til kanter
-edges = [
-    ('Skrue Duck', 'Donald Duck'),
-    ('Skrue Duck', 'Anton Duck'),
-    ('Skrue Duck', 'Bestemor Duck')
-]
-G.add_edges_from(edges)
+# Opprette et Plotly-diagram
+fig = go.Figure(data=[go.Sankey(
+    node = dict(
+      pad = 15,
+      thickness = 20,
+      line = dict(color = "black", width = 0.5),
+      label = [node for node, _ in nodes],
+      color = ["blue", "green", "red", "purple"]  # Tilpass farger
+    ),
+    link = dict(
+      source = [0, 0, 0],  # Indekser til kildenoden
+      target = [1, 2, 3],  # Indekser til målnoden
+      value = [1, 1, 1]  # Verdi for hver link
+  ))])
 
-# Tegn grafen med firkantede noder og jobbtitler
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True, node_shape='s', node_size=1500, font_weight='bold')
-
-# Legg til jobbtitler som node-etiketter
-node_labels = nx.get_node_attributes(G, 'Jobbtittel')
-nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=10, verticalalignment='bottom')
-
-plt.show()
+fig.show()
