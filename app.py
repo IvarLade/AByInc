@@ -1,26 +1,33 @@
+# app.py
+
+import organisasjon
 import plotly.graph_objects as go
 
-# Legg til noder med jobbtitler
-nodes = [
-    ('Skrue Duck', 'Sjef'),
-    ('Donald Duck', 'Arbeider'),
-    ('Anton Duck', 'PR-sjef'),
-    ('Bestemor Duck', 'HR-sjef')
-]
+# Hent person-objektene
+# personer = organisasjon.personer
+personer = organisasjon.les_organisasjon_fra_json()
 
-# Opprette et Plotly-diagram
+# Forbered data for Plotly (enklere eksempel)
+nodes = [person.navn for person in personer]
+links = []
+for person in personer:
+    if person.sjef:
+        links.append(dict(source=nodes.index(person.navn), target=nodes.index(person.sjef)))
+
+# Opprett figuren
 fig = go.Figure(data=[go.Sankey(
     node = dict(
       pad = 15,
       thickness = 20,
       line = dict(color = "black", width = 0.5),
-      label = [node for node, _ in nodes],
-      color = ["blue", "green", "red", "purple"]  # Tilpass farger
+      label = nodes,
+      color = "blue"
     ),
     link = dict(
-      source = [0, 0, 0],  # Indekser til kildenoden
-      target = [1, 2, 3],  # Indekser til målnoden
-      value = [1, 1, 1]  # Verdi for hver link
+      source = [i for i in range(len(links))], # indices correspond to labels in `node`
+      target = [links[i]['target'] for i in range(len(links))],
+      value = [1]*len(links)
   ))])
 
+fig.update_layout(title_text="Organisasjonskart", font_size=10)
 fig.show()
